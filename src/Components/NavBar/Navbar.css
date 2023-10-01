@@ -1,0 +1,11 @@
+nav {
+  @apply flex flex-row justify-around bg-slate-100 fixed bottom-0 w-screen py-3;
+}
+
+nav a {
+  @apply text-slate-900;
+}
+
+nav a.active {
+  @apply text-blue-400 font-bold border-2;
+}
