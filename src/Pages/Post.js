@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { useParams } from "react-router-dom"; // takes Params from the URL
+
+//this page should be lazy loaded
 
 export const Post = () => {
   return (
