@@ -1,5 +1,5 @@
 nav {
-  @apply flex flex-row justify-around bg-slate-100 fixed bottom-0 w-screen py-3;
+  @apply flex flex-row justify-around bg-slate-100 fixed bottom-0 w-screen py-3 align-middle;
 }
 
 nav a {
@@ -7,5 +7,9 @@ nav a {
 }
 
 nav a.active {
-  @apply text-blue-400 font-bold border-2;
+  @apply text-blue-700 font-bold;
+}
+
+nav a:hover {
+  @apply text-blue-500 scale-[130%];
 }

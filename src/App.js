@@ -4,8 +4,9 @@ import { AuthProvider } from "./Util/Auth.js";
 import { Navbar } from "./Components/NavBar/Navbar.js";
 
 import { NoMatch } from "./Pages/NoMatch";
-import { Home } from "./Pages/Home";
+// import { Home } from "./Pages/Home";
 import { Feed } from "./Pages/Feed";
+import { Upload } from "./Pages/UploadPage.js";
 import { Post } from "./Pages/Post.js";
 import { UsersPage } from "./Pages/UsersPage.js";
 import { UserDetails } from "./Components/UserDetails/UserDetails.js";
@@ -22,9 +23,11 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="feed" element={<Feed />} />
-        <Route path="post" element={<Post />}>
+        <Route path="/" element={<Feed />} />
+        {/* <Route path="feed" element={<Feed />} /> */}
+        <Route path="upload" element={<Upload />} />
+
+        <Route path="post/:postkey" element={<Post />}>
           <Route index element={<PostLikes />} />
           <Route path="postLikes" element={<PostLikes />} />
           <Route path="postComments" element={<PostComments />} />

@@ -10,10 +10,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply bg-slate-200;
+  @apply bg-slate-200 min-h-[100vh] max-h-[100%] pb-[2rem];
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.postbubble {
+  @apply bg-slate-50 rounded-[1rem] h-[33.5rem] lg:rounded-xl lg:h-[40rem] lg:w-[30rem] text-center p-6 mb-[1rem] shadow-md;
 }

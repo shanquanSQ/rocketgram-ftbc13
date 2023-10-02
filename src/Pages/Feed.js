@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { realTimeDatabase, storage } from "../firebase/firebase.js";
+import { Link } from "react-router-dom";
+
+import "../index.css";
+// import { Outlet } from "react-router-dom";
 
 // import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment, FaRegHeart } from "react-icons/fa6";
@@ -14,6 +18,35 @@ export const Feed = () => {
   // Or make the database call here?
 
   const [messages, setMessages] = useState();
+
+  const [state, setState] = useState({
+    messageText: "",
+    fileURL: "",
+    likes: 0,
+    comments: [],
+
+    userEmail: "",
+    userPassword: "",
+
+    currentUID: "",
+    isSignedIn: false,
+
+    fileInputFile: null,
+    fileInputValue: "",
+  });
+
+  const handleTextChange = (ev) => {
+    let { name, value } = ev.target;
+
+    setState({
+      [name]: value,
+    });
+  };
+
+  const writeData = (ev) => {
+    ev.preventDefault();
+    console.log("writee");
+  };
 
   // On componentDidMount, access database and get the information!
   // useEffect is the equivalent for Functional React Components.
@@ -231,37 +264,86 @@ export const Feed = () => {
     <>
       <div
         // key={message.key}
-        className=" bg-slate-50 rounded-[4rem] h-[25rem] lg:rounded-3xl  lg:h-[40rem] lg:w-[30rem] text-center p-6 mb-[1rem] shadow-md "
+        className="postbubble"
       >
-        <div className="flex flex-row justify-center border-2 border-blue-600 border-solid w-[100%] h-[60%]">
-          <img
-            src={message.photoUrl}
-            alt="default"
-            className="w-[100%] h-[100%] object-cover rounded-[2%] border-slate-400 border-[1px] border-solid overflow-hidden object-contain"
-          />
+        <div className="flex flex-row justify-between leading-tight pb-[.25rem] px-3">
+          <p className="text-sm chatbubbletext text-slate-800 lg:text-[1rem]">
+            {message.userEmail === "" ? message.userEmail : "Anonymous"}
+          </p>
+
+          <p className="text-sm chatbubbletext text-slate-400 lg:text-[1rem]">
+            {message.timestamp}
+          </p>
         </div>
 
-        <div className="flex flex-row justify-around">
-          <button onClick={console.log("liked")}>
-            hello
-            {/* <FaRegHeart size={30} /> */}
-          </button>
-          {/* <FaRegComment size={30} /> */}
-        </div>
+        <Link to={`/post/${message.userID}`}>
+          <div className="flex flex-row justify-center border-2 border-blue-600 border-solid w-[100%] h-[80%]">
+            {/* Need some dynamic linking here */}
+            {/* <Link to="/post"> */}
+            <img
+              src={message.photoUrl}
+              alt="default"
+              className="w-[100%] h-[100%] object-cover rounded-[3%] border-slate-400 border-[1px] border-solid overflow-hidden"
+            />
+            {/* </Link> */}
+          </div>
+        </Link>
 
-        <h3 className="text-2xl chatbubbletext text-slate-700 border-2 border-solid border-black p-3 leading-tight">
+        {/* <div className="flex flex-row justify-around"> */}
+        {/* <input
+            type="button"
+            value="Likes"
+            className="btn btn-accent btn-sm"
+            onClick={console.log("Heloo")}
+          /> */}
+        {/* <Link to="specific" className="btn btn-accent btn-sm">
+            Go to
+          </Link> */}
+
+        {/* <FaRegHeart size={30} /> */}
+
+        {/* <FaRegComment size={30} /> */}
+        {/* </div> */}
+
+        {/* <h3 className="text-2xl chatbubbletext text-slate-700 border-2 border-solid border-black p-3 leading-tight">
           {message.text}
-        </h3>
+        </h3> */}
 
-        <p className="text-md chatbubbletext text-slate-800 pr-3 pl-3 leading-tight">
-          {message.userEmail === "" ? message.userEmail : "Anonymous"}
-        </p>
+        <div className="flex flex-row justify-around ">
+          <div className="flex flex-row w-[50%] justify-center gap-[1rem]">
+            <FaRegHeart size={40} />
+            <p>{message.likes}</p>
+          </div>
+          <div className="flex flex-row w-[50%] justify-center gap-[1rem]">
+            <FaRegComment size={40} />
+            <p>{message.comments.length}</p>
+          </div>
+        </div>
 
-        <p className="text-sm chatbubbletext text-slate-400 pr-3 pl-3 leading-tight">
-          {message.timestamp}
-        </p>
+        <div>
+          <form
+            onSubmit={writeData}
+            className="join justify-center p-[1rem] w-[100%]"
+          >
+            <input
+              type="text"
+              name="messageText"
+              value={state.messageText}
+              onChange={handleTextChange}
+              autoComplete="off"
+              placeholder="Type Your Comment"
+              className="input input-default input-sm min-w-[90%]  text-slate-800 join-item"
+            />
 
-        <p>{message.likes}</p>
+            <input
+              type="button"
+              onClick={writeData}
+              className="btn btn-neutral btn-sm join-item rounded-r-xl"
+              value="Send"
+            />
+          </form>
+        </div>
+
         {/* 
           <input
             type="button"
@@ -301,7 +383,7 @@ export const Feed = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center ">
+      <div className="flex flex-row justify-center p-[1rem]">
         <div className="flex flex-col border-solid border-2 border-red-600  ">
           {/* Not sure why Gap property doesnt work. */}
           <div>{messageListItems}</div>
