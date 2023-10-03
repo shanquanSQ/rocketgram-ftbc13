@@ -13,6 +13,7 @@ import { UserDetails } from "./Components/UserDetails/UserDetails.js";
 import { Admin } from "./Pages/AdminPage.js";
 import { ProfilePage } from "./Pages/ProfilePage.js";
 import { LogInPage } from "./Pages/LogInPage.js";
+import { CreateAccount } from "./Pages/CreateAccountPage.js";
 
 import { PostLikes } from "./Components/postLikes/PostLikes.js";
 import { PostComments } from "./Components/postComments/PostComments.js";
@@ -40,7 +41,9 @@ function App() {
         </Route>
 
         <Route path="profile" element={<ProfilePage />} />
-        <Route path="login" element={<LogInPage />} />
+        <Route path="login" element={<LogInPage />}>
+          <Route path="createaccount" element={<CreateAccount />} />
+        </Route>
 
         <Route path="*" element={<NoMatch />} />
       </Routes>

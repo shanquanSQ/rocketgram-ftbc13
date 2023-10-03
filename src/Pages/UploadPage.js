@@ -110,11 +110,13 @@ export const Upload = () => {
             </form>
 
             <form onSubmit={uploadPost}>
+              {/* some kind of pre-processing is already done, so fileInputValue doesnt need to be */}
               <input
                 type="file"
                 name="fileUpload"
                 value={uploadedFile.fileInputValue}
                 onChange={(ev) => {
+                  console.log(ev.target.files);
                   // cant change fileInputValue to fileInputFile??? Throws error.
                   setUploadFile({
                     fileInputFile: ev.target.files[0],

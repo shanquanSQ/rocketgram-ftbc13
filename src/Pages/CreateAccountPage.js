@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 // import { useAuth } from "../Util/Auth";
 
 import { auth } from "../firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 // Because this component needs to accept a user, we will need to store it in a state. So import useState.
-export const LogInPage = () => {
+export const CreateAccount = () => {
   const [status, setStatus] = useState(false);
   const [user, setUser] = useState("");
 
@@ -60,9 +59,6 @@ export const LogInPage = () => {
       <div className="flex flex-row justify-center border-2 border-solid border-red-300 h-[80vh] m-0">
         <div className="flex flex-col justify-center  p-[1rem] border-2 border-solid border-blue-800 ">
           <div>
-            {/* <Link to="createaccount" className="btn btn-accent btn-sm">
-              Create Account
-            </Link> */}
             <button
               onClick={() => setStatus(!status)}
               className="btn btn-accent btn-sm"

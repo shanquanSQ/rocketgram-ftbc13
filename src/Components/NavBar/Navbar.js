@@ -29,6 +29,9 @@ export const Navbar = () => {
           <FaUser size={25} />
         </div>
       </NavLink>
+
+      <NavLink to="/login">LOGIN</NavLink>
+
       {/* {!auth.user && <NavLink to="/login">Log In</NavLink>} */}
     </nav>
   );
