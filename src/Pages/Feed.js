@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { realTimeDatabase, storage } from "../firebase/firebase.js";
 import { Link } from "react-router-dom";
 
+import { auth } from "../firebase/firebase.js";
+import { onAuthStateChanged } from "firebase/auth";
+
 import "../index.css";
 // import { Outlet } from "react-router-dom";
 
@@ -33,6 +36,18 @@ export const Feed = () => {
 
     fileInputFile: null,
     fileInputValue: "",
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const uid = user.uid;
+      console.log("user is signed in, user: ", uid);
+      // ...
+    } else {
+      console.log("user is signed out");
+    }
   });
 
   const handleTextChange = (ev) => {

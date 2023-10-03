@@ -67,7 +67,6 @@ export const CreateAccount = () => {
             </button>
             {status === false ? "status is false" : "status is true"}
           </div>
-
           {/* Why does functional based/hook based NOT need Value? */}
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-[1rem]">

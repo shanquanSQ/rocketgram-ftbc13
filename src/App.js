@@ -20,7 +20,8 @@ import { PostComments } from "./Components/postComments/PostComments.js";
 
 function App() {
   return (
-    <AuthProvider>
+    <>
+      {/* <AuthProvider> */}
       <Navbar />
 
       <Routes>
@@ -47,7 +48,8 @@ function App() {
 
         <Route path="*" element={<NoMatch />} />
       </Routes>
-    </AuthProvider>
+      {/* </AuthProvider> */}
+    </>
   );
 }
 

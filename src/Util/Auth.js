@@ -3,8 +3,6 @@ import { useState } from "react";
 
 const AuthContext = createContext(null);
 
-// note that AuthProvider = (props) =>{....}
-// It is props that are passed in here, for functional react components.
 export const AuthProvider = ({ children }) => {
   // maintain user's state
   const [user, setUser] = useState(null);
