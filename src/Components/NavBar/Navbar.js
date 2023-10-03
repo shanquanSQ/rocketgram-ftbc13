@@ -30,7 +30,7 @@ export const Navbar = () => {
         </div>
       </NavLink>
 
-      <NavLink to="/login">LOGIN</NavLink>
+      {/* <NavLink to="/login">LOGIN</NavLink> */}
 
       {/* {!auth.user && <NavLink to="/login">Log In</NavLink>} */}
     </nav>

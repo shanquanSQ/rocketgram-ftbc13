@@ -3,7 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../Util/Auth.js";
 
-import { auth } from "../firebase/firebase";
+import { auth } from "../firebase/firebase.js";
+import { onAuthStateChanged } from "firebase/auth";
 
 import {
   createUserWithEmailAndPassword,

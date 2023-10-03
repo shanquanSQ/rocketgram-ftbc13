@@ -5,11 +5,24 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 
-import "../index.css";
-// import { Outlet } from "react-router-dom";
+import {
+  onChildAdded,
+  push,
+  ref,
+  set,
+  onChildRemoved,
+  remove,
+  get,
+  onValue,
+  update,
+  onChildChanged,
+} from "firebase/database";
 
-// import { AiOutlineHeart } from "react-icons/ai";
+import "../index.css";
+
 import { FaRegComment, FaRegHeart } from "react-icons/fa6";
+
+import { FeedTicker } from "../Components/FeedTicker/FeedTicker.js";
 
 // Save the Firebase message folder name as a constant to avoid bugs due to misspelling
 const DB_MESSAGES_KEY = "storedMessages"; //This corresponds to the Firebase RTDB branch/document
@@ -17,10 +30,14 @@ const STORAGE_KEY = "images/"; // This corresponds to the Firebase Storage branc
 
 export const Feed = () => {
   // Should get information about EACH post here.
+
   // Q: Should it be passed as props here?
   // Or make the database call here?
 
   const [messages, setMessages] = useState();
+
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState("");
 
   const [state, setState] = useState({
     messageText: "",
@@ -38,13 +55,62 @@ export const Feed = () => {
     fileInputValue: "",
   });
 
+  useEffect(() => {
+    console.log("useEffect Triggered");
+    const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
+    console.log(messagesRef);
+
+    // onChildAdded will return data for every child at the reference and every subsequent new child
+    // onChildAdded(messagesRef, (data) => {
+    //   console.log("hmmm");
+
+    //   // Add the subsequent child to local component state, initialising a new array to trigger re-render
+    //   setMessages((prevState) => {
+    //     // Store message key so we can use it as a key in our list items when rendering messages
+    //     return [...prevState, { key: data.key, val: data.val() }];
+    //   });
+    // });
+
+    // onChildRemoved(messagesRef, (data) => {
+    //   const newRemainingMessages = messages.filter(
+    //     (message) => message.key !== data.key
+    //   );
+    //   setMessages({
+    //     messages: newRemainingMessages,
+    //   });
+    // });
+
+    console.log("initialised messages state is: ", messages);
+
+    return () => {
+      console.log("dismounted");
+    };
+  }, []);
+
+  // only trigger when messages changes.
+  // will add in the number of likes and comments later
+
+  // onChildAdded will return data for every child at the reference and every subsequent new child
+  // onChildAdded(messagesRef, (data) => {
+  //   console.log("hmmm");
+
+  //   // Add the subsequent child to local component state, initialising a new array to trigger re-render
+  //   setMessages((prevState) => {
+  //     // Store message key so we can use it as a key in our list items when rendering messages
+  //     return [...prevState, { key: data.key, val: data.val() }];
+  //   });
+  // });
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       const uid = user.uid;
+      console.log("user is: ", user);
       console.log("user is signed in, user: ", uid);
-      // ...
+
+      setIsSignedIn(true);
+      setCurrentUser(uid);
     } else {
       console.log("user is signed out");
     }
@@ -235,43 +301,6 @@ export const Feed = () => {
       photoUrl:
         "https://images.unsplash.com/photo-1603553329474-99f95f35394f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1pYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto.format&fit=crop&w=2069&q=80",
     },
-
-    {
-      userID: "mia",
-      text: "Goodnight!",
-      timestamp: "1 October 2023 10:10pm",
-      likes: 48,
-      comments: [
-        {
-          commenterID: "Olivia Johnson 🇺🇸",
-          commentTimeStamp: "2 October 2023 6:15am",
-          commentLikes: 9,
-          commentText: "📸🌞 Lovely photo!",
-        },
-        {
-          commenterID: "Yusuke Suzuki 🇯🇵",
-          commentTimeStamp: "2 October 2023 6:45am",
-          commentLikes: 12,
-          commentText: "👏🌟 Incredible shot!",
-        },
-        {
-          commenterID: "Xin Li 🇨🇳",
-          commentTimeStamp: "2 October 2023 7:30am",
-          commentLikes: 15,
-          commentText: "🌸📷 Amazing photography!",
-        },
-        {
-          commenterID: "Neha Gupta 🇮🇳",
-          commentTimeStamp: "2 October 2023 8:00am",
-          commentLikes: 11,
-          commentText: "🌆👍 Great work!",
-        },
-      ],
-      profilePictureUrl:
-        "https://images.unsplash.com/photo-1553528989-978b279600f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1pYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-      photoUrl:
-        "https://images.unsplash.com/photo-1553528989-978b279600f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1pYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto.format&fit=crop&w=1974&q=80",
-    },
   ];
 
   // let messageListItems = props.map((message) => <></>);
@@ -400,8 +429,15 @@ export const Feed = () => {
     <>
       <div className="flex flex-row justify-center p-[1rem]">
         <div className="flex flex-col border-solid border-2 border-red-600  ">
-          {/* Not sure why Gap property doesnt work. */}
-          <div>{messageListItems}</div>
+          <div className="flex flex-row justify-center border-solid border-2 border-amber-600 py-[.5rem]">
+            {isSignedIn === false ? (
+              "You are not signed in, there is restricted access"
+            ) : (
+              <FeedTicker username={currentUser} />
+            )}
+          </div>
+
+          <div className="flex flex-col-reverse">{messageListItems}</div>
         </div>
       </div>
     </>

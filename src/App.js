@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./Util/Auth.js";
+// import { AuthProvider } from "./Util/Auth.js";
 
 import { Navbar } from "./Components/NavBar/Navbar.js";
 
