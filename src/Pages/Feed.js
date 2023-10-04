@@ -56,7 +56,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
   });
 
   useEffect(() => {
-    console.log("useEffect Triggered");
+    console.log("useEffect Triggered on Mount");
     const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
     // console.log(messagesRef);
 
@@ -69,12 +69,9 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
         { key: data.key, val: data.val() },
       ]);
 
-      console.log("onchildadded ended, messages is: ", messages);
+      // console.log("onchildadded ended, messages is: ", messages);
+      // this will show empty because it renders before the state.
     });
-  }, []);
-
-  useEffect(() => {
-    const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
 
     onChildRemoved(messagesRef, (data) => {
       const newRemainingMessages = messages.filter(
@@ -82,29 +79,29 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
       );
       setMessages(newRemainingMessages);
     });
-  });
+  }, []);
 
-  useEffect(() => {
-    const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
+  // useEffect(() => {
+  //   const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
 
-    onChildChanged(messagesRef, (snapshot) => {
-      console.log("onChildChanged");
-      console.log("messages: ", messages);
-      //At this point, messages is updated on the database
-      // Need to update state to re render.
+  //   onChildChanged(messagesRef, (snapshot) => {
+  //     console.log("onChildChanged");
+  //     console.log("messages: ", messages);
+  //     //At this point, messages is updated on the database
+  //     // Need to update state to re render.
 
-      const replaceIndex = messages.findIndex(
-        (message) => message.key === snapshot.key
-      );
-      console.log("index is: ", replaceIndex);
+  //     const replaceIndex = messages.findIndex(
+  //       (message) => message.key === snapshot.key
+  //     );
+  //     console.log("index is: ", replaceIndex);
 
-      const existingMessages = messages;
-      const updatedMessage = { key: snapshot.key, val: snapshot.val() };
-      existingMessages.splice(replaceIndex, 1, updatedMessage);
+  //     const existingMessages = messages;
+  //     const updatedMessage = { key: snapshot.key, val: snapshot.val() };
+  //     existingMessages.splice(replaceIndex, 1, updatedMessage);
 
-      setMessages(existingMessages);
-    });
-  }, [messages]);
+  //     setMessages(existingMessages);
+  //   });
+  // }, [messages]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -184,6 +181,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
 
     get(childToIncrementLike).then((snapshot) => {
       const data = snapshot.val();
+
       set(childToIncrementLike, {
         text: data.text,
 
@@ -191,7 +189,6 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
         fileURL: data.fileURL,
 
         likes: data.likes + 1,
-        comments: data.comments,
 
         userEmail: data.userEmail,
         userUID: data.userUID,
