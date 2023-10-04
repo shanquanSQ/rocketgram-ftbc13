@@ -18,6 +18,10 @@ import { CreateAccount } from "./Pages/CreateAccountPage.js";
 import { PostLikes } from "./Components/postLikes/PostLikes.js";
 import { PostComments } from "./Components/postComments/PostComments.js";
 
+// Save the Firebase message folder name as a constant to avoid bugs due to misspelling
+const DB_MESSAGES_KEY = "storedMessages"; //This corresponds to the Firebase RTDB branch/document
+const STORAGE_KEY = "images/"; // This corresponds to the Firebase Storage branch/document
+
 function App() {
   return (
     <>
@@ -25,11 +29,21 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Feed />} />
+        <Route
+          path="/"
+          element={
+            <Feed DB_MESSAGES_KEY={DB_MESSAGES_KEY} STORAGE_KEY={STORAGE_KEY} />
+          }
+        />
         {/* <Route path="feed" element={<Feed />} /> */}
         <Route path="upload" element={<Upload />} />
 
-        <Route path="post/:postkey" element={<Post />}>
+        <Route
+          path="post/:postkey"
+          element={
+            <Post DB_MESSAGES_KEY={DB_MESSAGES_KEY} STORAGE_KEY={STORAGE_KEY} />
+          }
+        >
           <Route index element={<PostLikes />} />
           <Route path="postLikes" element={<PostLikes />} />
           <Route path="postComments" element={<PostComments />} />

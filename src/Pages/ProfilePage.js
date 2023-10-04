@@ -26,6 +26,8 @@ export const ProfilePage = (user) => {
 
       // ...
     } else {
+      // try to console log useNavigate
+
       // Show the Login Page
       navigate("/login");
     }

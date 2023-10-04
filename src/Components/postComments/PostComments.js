@@ -1,3 +1,12 @@
+import { useOutletContext } from "react-router-dom";
+
 export const PostComments = () => {
-  return <div>Comments of specific post</div>;
+  const [postKey] = useOutletContext();
+
+  return (
+    <>
+      <div>Comments of specific post</div>
+      <p>{postKey}--</p>
+    </>
+  );
 };

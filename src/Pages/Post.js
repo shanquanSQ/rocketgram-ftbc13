@@ -31,7 +31,7 @@ export const Post = () => {
             Likes
           </Link>
         </div>
-        <Outlet />
+        <Outlet context={[postKey]} />
       </div>
     </>
   );
