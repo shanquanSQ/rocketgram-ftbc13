@@ -44,9 +44,33 @@ function App() {
             <Post DB_MESSAGES_KEY={DB_MESSAGES_KEY} STORAGE_KEY={STORAGE_KEY} />
           }
         >
-          <Route index element={<PostLikes />} />
-          <Route path="postLikes" element={<PostLikes />} />
-          <Route path="postComments" element={<PostComments />} />
+          <Route
+            index
+            element={
+              <PostLikes
+                DB_MESSAGES_KEY={DB_MESSAGES_KEY}
+                STORAGE_KEY={STORAGE_KEY}
+              />
+            }
+          />
+          <Route
+            path="postLikes"
+            element={
+              <PostLikes
+                DB_MESSAGES_KEY={DB_MESSAGES_KEY}
+                STORAGE_KEY={STORAGE_KEY}
+              />
+            }
+          />
+          <Route
+            path="postComments"
+            element={
+              <PostComments
+                DB_MESSAGES_KEY={DB_MESSAGES_KEY}
+                STORAGE_KEY={STORAGE_KEY}
+              />
+            }
+          />
         </Route>
 
         <Route path="allusers" element={<UsersPage />}>

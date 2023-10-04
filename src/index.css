@@ -19,5 +19,5 @@ code {
 }
 
 .postbubble {
-  @apply bg-slate-50 rounded-[1rem] h-[33.5rem] lg:rounded-xl lg:h-[40rem] lg:w-[30rem] text-center p-6 mb-[1rem] shadow-md;
+  @apply bg-slate-50 rounded-[1rem] h-[35rem] lg:rounded-xl lg:h-[40rem] lg:w-[30rem] text-center p-6 mb-[1rem] shadow-md;
 }

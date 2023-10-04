@@ -37,7 +37,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
   const [messages, setMessages] = useState([]);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState("");
+  const [currentUserUID, setCurrentUserUID] = useState("");
 
   const [state, setState] = useState({
     messageText: "",
@@ -77,16 +77,10 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
     const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
 
     onChildRemoved(messagesRef, (data) => {
-      console.log("remove triggered: ", data);
-      console.log("messages keys?: ", messages);
       const newRemainingMessages = messages.filter(
         (message) => message.key !== data.key
       );
-
-      console.log("remaining messages is :", newRemainingMessages);
       setMessages(newRemainingMessages);
-
-      console.log("childremove ended, messages is: ", messages);
     });
   });
 
@@ -121,7 +115,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
       // console.log("user is signed in, user: ", uid);
 
       setIsSignedIn(true);
-      setCurrentUser(uid);
+      setCurrentUserUID(uid);
     } else {
       // console.log("user is signed out");
     }
@@ -135,14 +129,39 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
     });
   };
 
-  const writeData = (ev) => {
+  const submitComment = (ev) => {
     ev.preventDefault();
-    console.log("checking");
+    console.log("comment start");
+
+    if (state.messageText !== "") {
+      const childToAddComment = ref(
+        realTimeDatabase,
+        `${DB_MESSAGES_KEY}/${ev.target.id}`
+      );
+
+      get(childToAddComment).then((snapshot) => {
+        const data = snapshot.val();
+        set(childToAddComment, {
+          text: data.text,
+
+          timestamp: data.timestamp,
+          fileURL: data.fileURL,
+
+          likes: data.likes,
+          comments: state.messageText,
+
+          userEmail: data.userEmail,
+          userUID: data.userUID,
+        });
+      });
+
+      console.log("added comment");
+    }
   };
 
   const handleDelete = (ev) => {
     ev.preventDefault();
-    console.log("delete triggered");
+    // console.log("delete triggered");
 
     const messageToDelete = ref(
       realTimeDatabase,
@@ -150,10 +169,10 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
     );
 
     remove(messageToDelete).then(() => {
-      console.log("message deleted in RTDB promise");
+      // console.log("message deleted in RTDB promise");
     });
 
-    console.log("delete ended");
+    // console.log("delete ended");
   };
 
   const handleIncrementLike = (ev) => {
@@ -179,6 +198,9 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
       });
     });
   };
+
+  // On componentDidMount, access database and get the information!
+  // useEffect is the equivalent for Functional React Components.
 
   // const messagesTest = [
   //   {
@@ -359,13 +381,18 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
       <div key={message.key} className="postbubble">
         <div className="flex flex-col justify-between text-left leading-tight pb-[.25rem] px-3">
           <div className="flex flex-row justify-between">
-            <p className="text-sm chatbubbletext text-slate-800 lg:text-[1rem]">
+            <p className="text-sm chatbubbletext text-slate-800 lg:text-[1rem] font-sans">
               {message.val.userEmail === ""
                 ? "Anonymous"
                 : message.val.userEmail}
             </p>
-            {message.val.userEmail === "" ? (
-              <button id={message.key} onClick={handleDelete}>
+            {message.val.userEmail === "" ||
+            message.val.userUID === currentUserUID ? (
+              <button
+                id={message.key}
+                onClick={handleDelete}
+                className="btn btn-error btn-xs"
+              >
                 Delete
               </button>
             ) : null}
@@ -377,38 +404,16 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
         </div>
 
         <Link to={`/post/${message.val.userUID}`}>
-          <div className="flex flex-row justify-center border-2 border-blue-600 border-solid w-[100%] h-[80%]">
-            {/* Need some dynamic linking here */}
-            {/* <Link to="/post"> */}
+          <div className="flex flex-row justify-center border-2 border-blue-600 border-solid w-[100%] h-[70%] mb-[1rem]">
             <img
               src={message.val.fileURL}
               alt="default"
               className="w-[100%] h-[100%] object-cover rounded-[3%] border-slate-400 border-[1px] border-solid overflow-hidden"
             />
-            {/* </Link> */}
           </div>
         </Link>
 
-        {/* <div className="flex flex-row justify-around"> */}
-        {/* <input
-            type="button"
-            value="Likes"
-            className="btn btn-accent btn-sm"
-            onClick={console.log("Heloo")}
-          /> */}
-        {/* <Link to="specific" className="btn btn-accent btn-sm">
-            Go to
-          </Link> */}
-
-        {/* <FaRegHeart size={30} /> */}
-
-        {/* <FaRegComment size={30} /> */}
-        {/* </div> */}
-
-        {/* <h3 className="text-2xl chatbubbletext text-slate-700 border-2 border-solid border-black p-3 leading-tight">
-          {message.text}
-        </h3> */}
-
+        {/* LIKE BUTTON */}
         <div className="flex flex-row justify-around ">
           <div className="flex flex-row w-[50%] justify-center gap-[1rem]">
             {/* <FaRegHeart size={40} />{" "} */}
@@ -427,9 +432,10 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
           </div>
         </div>
 
+        {/* SUBMIT COMMENT ON IDIVIDIUAL POST */}
         <div>
           <form
-            onSubmit={writeData}
+            onSubmit={submitComment}
             className="join justify-center p-[1rem] w-[100%]"
           >
             <input
@@ -444,7 +450,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
 
             <input
               type="button"
-              onClick={writeData}
+              onClick={submitComment}
               className="btn btn-neutral btn-sm join-item rounded-r-xl"
               value="Send"
             />
@@ -496,7 +502,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
             {isSignedIn === false ? (
               "You are not signed in, there is restricted access"
             ) : (
-              <FeedTicker username={currentUser} />
+              <FeedTicker username={currentUserUID} />
             )}
           </div>
           <button

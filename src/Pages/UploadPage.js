@@ -1,20 +1,9 @@
 import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import {
-  onChildAdded,
-  push,
-  ref,
-  set,
-  onChildRemoved,
-  remove,
-  get,
-  onValue,
-  update,
-  onChildChanged,
-} from "firebase/database";
+import { push, ref, set } from "firebase/database";
 
 import { realTimeDatabase, storage } from "../firebase/firebase.js";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import { auth } from "../firebase/firebase.js";
@@ -26,7 +15,7 @@ const DB_MESSAGES_KEY = "storedMessages"; //This corresponds to the Firebase bra
 const STORAGE_KEY = "images/"; // This corresponds to the Firebase branch/document
 
 export const Upload = () => {
-  const [messages, setMessages] = useState();
+  // const [messages, setMessages] = useState();
   const [userLoggedIn, setUserLoggedIn] = useState("");
   const [userLoggedInEmail, setUserLoggedInEmail] = useState("");
 
@@ -86,7 +75,7 @@ export const Upload = () => {
         fileURL: photoURL,
 
         likes: 0,
-        comments: [""],
+        comments: [" "],
 
         userUID: userLoggedIn,
         userEmail: userLoggedInEmail,
