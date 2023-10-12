@@ -39,7 +39,7 @@ function App() {
         <Route path="upload" element={<Upload />} />
 
         <Route
-          path="post/:postkey"
+          path="post/:messagekey"
           element={
             <Post DB_MESSAGES_KEY={DB_MESSAGES_KEY} STORAGE_KEY={STORAGE_KEY} />
           }

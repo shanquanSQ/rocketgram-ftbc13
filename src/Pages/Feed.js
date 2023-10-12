@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { auth } from "../firebase/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
+import { createContext } from "react";
 
 import {
   onChildAdded,
@@ -79,29 +80,81 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
       );
       setMessages(newRemainingMessages);
     });
+
+    // onChildChanged(messagesRef, (snapshot) => {
+    //   console.log("onChildChanged");
+
+    //   setMessages((prevState) => {
+    //     const replaceIndex = messages.findIndex(
+    //       (message) => message.key === snapshot.key
+    //     );
+
+    //     const updatedMessage = { key: snapshot.key, val: snapshot.val() };
+    //     const currentMessageList = [...prevState];
+
+    //     currentMessageList.splice(replaceIndex, 1, updatedMessage);
+    //     return currentMessageList;
+    //   });
+
+    //   ///////////// Doesn't work because of how componentDidMount and UseEffect handles state differently.
+    //   // const replaceIndex = messages.findIndex(
+    //   //   (message) => message.key === snapshot.key
+    //   // );
+
+    //   // const existingMessages = messages;
+    //   // const updatedMessage = { key: snapshot.key, val: snapshot.val() };
+
+    //   // // console.log("updated messages: ", updatedMessage);
+    //   // existingMessages.splice(replaceIndex, 1, updatedMessage);
+    //   // // console.log("existing messages: ", existingMessages);
+    //   // setMessages(existingMessages);
+    // });
+
+    onChildChanged(messagesRef, (snapshot) => {
+      setMessages((prevState) => {
+        // console.log("prevState is: ", prevState);
+        console.log("prevstate : ", prevState);
+        const currentMessageList = [...prevState];
+        // this making a "copy" of prevState. have to do this even though prevstate and ...prevstate console.logs the same thing,
+        // BECAUSE react will not trigger render if i am trying to return the same item in memory. (Sam mentioned that it is a Javascript thing)
+        // So i have to re-create whatever is happening at the beginning in a different memory for sure.
+
+        const replaceIndex = prevState.findIndex(
+          (message) => message.key === snapshot.key
+        );
+
+        // console.log(replaceIndex); //seems to be giving me TWO values?? a -1 followed by the value that I want.
+
+        const updatedMessage = { key: snapshot.key, val: snapshot.val() };
+
+        currentMessageList.splice(replaceIndex, 1, updatedMessage);
+        return currentMessageList;
+      });
+    });
   }, []);
 
   // useEffect(() => {
   //   const messagesRef = ref(realTimeDatabase, DB_MESSAGES_KEY);
 
   //   onChildChanged(messagesRef, (snapshot) => {
-  //     console.log("onChildChanged");
-  //     console.log("messages: ", messages);
-  //     //At this point, messages is updated on the database
-  //     // Need to update state to re render.
+  //     setMessages((prevState) => {
+  //       // console.log("prevState is: ", prevState);
+  //       console.log("prevstate : ", prevState);
+  //       const currentMessageList = prevState;
 
-  //     const replaceIndex = messages.findIndex(
-  //       (message) => message.key === snapshot.key
-  //     );
-  //     console.log("index is: ", replaceIndex);
+  //       const replaceIndex = prevState.findIndex(
+  //         (message) => message.key === snapshot.key
+  //       );
 
-  //     const existingMessages = messages;
-  //     const updatedMessage = { key: snapshot.key, val: snapshot.val() };
-  //     existingMessages.splice(replaceIndex, 1, updatedMessage);
+  //       console.log(replaceIndex); //seems to be giving me TWO values?? a -1 followed by the value that I want.
 
-  //     setMessages(existingMessages);
+  //       const updatedMessage = { key: snapshot.key, val: snapshot.val() };
+
+  //       currentMessageList.splice(replaceIndex, 1, updatedMessage);
+  //       return currentMessageList;
+  //     });
   //   });
-  // }, [messages]);
+  // });
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -138,6 +191,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
 
       get(childToAddComment).then((snapshot) => {
         const data = snapshot.val();
+        console.log(snapshot.val());
         set(childToAddComment, {
           text: data.text,
 
@@ -145,7 +199,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
           fileURL: data.fileURL,
 
           likes: data.likes,
-          comments: state.messageText,
+          comments: data.comments,
 
           userEmail: data.userEmail,
           userUID: data.userUID,
@@ -400,7 +454,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
           </p>
         </div>
 
-        <Link to={`/post/${message.val.userUID}`}>
+        <Link to={`/post/${message.key}`}>
           <div className="flex flex-row justify-center border-2 border-blue-600 border-solid w-[100%] h-[70%] mb-[1rem]">
             <img
               src={message.val.fileURL}
@@ -506,6 +560,7 @@ export const Feed = ({ DB_MESSAGES_KEY, STORAGE_KEY }) => {
             onClick={() => {
               console.log(messages);
             }}
+            className="btn btn-accent btn-xs "
           >
             Test
           </button>

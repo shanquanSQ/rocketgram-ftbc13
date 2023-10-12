@@ -75,7 +75,7 @@ export const Upload = () => {
         fileURL: photoURL,
 
         likes: 0,
-        comments: [" "],
+        // comments: [],
 
         userUID: userLoggedIn,
         userEmail: userLoggedInEmail,
